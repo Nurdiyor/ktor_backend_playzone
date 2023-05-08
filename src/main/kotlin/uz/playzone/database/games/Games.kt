@@ -6,45 +6,40 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Games : Table() {
-    private val gameId = varchar("gameId", 100)
-    private val name = varchar("name", 100)
-    private val backdrop = varchar("backdrop", 50).nullable()
-    private val logo = varchar("logo", 50)
-    private val description = varchar("description", 500)
-    private val downloadCount = integer("download_count")
-    private val version = varchar("version", 15)
-    private val weight = varchar("weight", 10)
+    private val gameId = Games.varchar(name = "gameId", length = 100)
+    private val title = Games.varchar(name = "title", length = 150)
+    private val description = Games.varchar(name = "description", length = 500)
+    private var version = Games.varchar(name = "version", length = 20)
+    private var size = Games.varchar(name = "size", length = 10)
 
-    fun insertGames(gameDto: GameDTO) {
+    fun insert(gameDTO: GameDTO) {
         transaction {
-            insert {
-                it[gameId] = gameDto.gameId
-                it[name] = gameDto.name
-                it[backdrop] = gameDto.backdrop
-                it[logo] = gameDto.logo
-                it[description] = gameDto.description
-                it[downloadCount] = gameDto.downloadCount
-                it[version] = gameDto.version
-                it[weight] = gameDto.weight
+            Games.insert {
+                it[gameId] = gameDTO.gameID
+                it[title] = gameDTO.title
+                it[description] = gameDTO.description
+                it[version] = gameDTO.version
+                it[size] = gameDTO.size
             }
         }
     }
 
-    fun fetchGames(): List<GameDTO> {
-        val games = transaction {
-            Games.selectAll().toList().map {
-                GameDTO(
-                    gameId = it[gameId],
-                    name = it[name],
-                    backdrop = it[backdrop],
-                    logo = it[logo],
-                    description = it[description],
-                    downloadCount = it[downloadCount],
-                    version = it[version],
-                    weight = it[weight]
-                )
+    fun fetchAll(): List<GameDTO> {
+        return try {
+            transaction {
+                Games.selectAll().toList()
+                    .map {
+                        GameDTO(
+                            gameID = it[gameId],
+                            title = it[title],
+                            description = it[description],
+                            version = it[version],
+                            size = it[size]
+                        )
+                    }
             }
+        } catch (e: Exception) {
+            emptyList()
         }
-        return games
     }
 }

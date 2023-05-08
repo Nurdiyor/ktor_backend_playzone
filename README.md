@@ -8,3 +8,4 @@
 ### http://0.0.0.0:8080/
 ### http://0.0.0.0:8080/login
 ### http://0.0.0.0:8080/register
+### https://ktor.io/docs/requests.html#query_parameters

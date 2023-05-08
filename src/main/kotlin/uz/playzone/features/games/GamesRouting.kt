@@ -5,11 +5,11 @@ import io.ktor.server.routing.*
 
 fun Application.configureGamesRouting() {
     routing {
-        post("/games/fetch") {
-            GamesController(call).fetchAllGames()
+        get("/games/search") {
+            GamesController(call).performSearch()
         }
-        post("/games/add") {
-            GamesController(call).addGame()
+        post("/games/create") {
+            GamesController(call).createGame()
         }
     }
 }
